@@ -46,7 +46,7 @@ function gravitational_potential{G <: AbstractFloat}(x::G, p::NFWParameters{G})
 end
 
 """
-Slower version of function
+Slower version of function gravitational_potential0() but works in cases where a analytic form for solution does not exist
 """
 function gravitational_potential_integral{G <: AbstractFloat, P <: SFWParameters}(x::G, p::P)
     function integrand1(xi::G)
@@ -61,13 +61,16 @@ function gravitational_potential_integral{G <: AbstractFloat, P <: SFWParameters
     return p.Φs * (1.0 - (Φ1 / x + Φ2))
 end
 
-function gravitational_potential{G <: AbstractFloat, P <: SFWParameters}(x::G, p::P)
+"""
+Gravitational potential for SFW profile where center of galaxy is not forced to zero, use to compute normalization factor Φ0
+"""
+function gravitational_potential0{G <: AbstractFloat, P <: SFWParameters}(x::G, p::P)
     if ((3.0 - p.β) / p.α % 1.0) == 0.0 || ((p.γ - p.β) / p.α % 1.0) == 0.0
         return gravitational_potential_integral(x, p)
     end
     p1b = hypergeom_2F1_expanded((3.0 - p.γ) / p.α, (p.β - p.γ) / p.α, (3.0 + p.α - p.γ) / p.α, -x ^ p.α)
     I1 = -(x ^ (3.0 - p.γ) * p1b) / (x * (p.γ - 3.0))
-    p2 = hypergeom_2F1_expanded((p.β - 2.0) / p.α, (p.β - p.γ) / p.α, (p.α + p.β - 2.0) / alpha, -x ^ (-p.α))
+    p2 = hypergeom_2F1_expanded((p.β - 2.0) / p.α, (p.β - p.γ) / p.α, (p.α + p.β - 2.0) / p.α, -x ^ (-p.α))
     I2 = x ^ (2.0 - p.β) * p2 / (p.β - 2.0)
     return p.Φs * (1.0 - (I1 + I2))
 end
@@ -75,6 +78,6 @@ end
 """
 Gravitational potential for SFW profile where center of galaxy is forced to have a potential of 0.
 """
-function gravitational_potential0{G <: AbstractFloat, P <: SFWParameters}(x::G, p::P)
-    return gravitational_potential(x, p) -  p.Φ0
+function gravitational_potential{G <: AbstractFloat, P <: SFWParameters}(x::G, p::P)
+    return gravitational_potential0(x, p) -  p.Φ0
 end

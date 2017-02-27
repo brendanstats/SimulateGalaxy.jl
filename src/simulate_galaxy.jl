@@ -6,8 +6,8 @@ function simulate_galaxy{G <: AbstractFloat, T <: Integer}(p::NFWParameters{G}, 
         return -(x[1] * x[1] * x[3] * profile_density(x[1], x[2], x[3], p))
     end
 
-    minProb = Optim.optimize(nfwopt, [0.1, 1.0, 1.0], method = :nelder_mead)
-    fmax = max(0.0,  -1.1 * minProb.f_minimum)
+    minProb = Optim.optimize(nfwopt, [0.1, 1.0, 1.0], method = Optim.NelderMead())
+    fmax = max(0.0,  -1.1 * minProb.minimum)
     
     vmax0 = escape_velocity(x0, p)
     sampledValues = Array{Float64}(samplesize, 3)
@@ -32,7 +32,7 @@ function simulate_galaxy{G <: AbstractFloat, T <: Integer}(p::NFWParameters{G}, 
     if rate
         return sampledValues, accepted / tested
     end
-    return sampledVaues
+    return sampledValues
 end
 
 function simulate_galaxy{G <: AbstractFloat, T <: Integer}(p::SFWParameters{G}, samplesize::T; x0::G = 10.0^-8, rate::Bool = false)
@@ -40,8 +40,8 @@ function simulate_galaxy{G <: AbstractFloat, T <: Integer}(p::SFWParameters{G}, 
         return -(x[1] * x[1] * x[3] * profile_density(x[1], x[2], x[3], p))
     end
 
-    minProb = Optim.optimize(sfwopt, [0.1, 1.0, 1.0], method = :nelder_mead)
-    fmax = max(0.0,  -1.1 * minProb.f_minimum)
+    minProb = Optim.optimize(sfwopt, [0.1, 1.0, 1.0], method = Optim.NelderMead())
+    fmax = max(0.0,  -1.1 * minProb.minimum)
     
     vmax0 = escape_velocity(x0, p)
     sampledValues = Array{G}(samplesize, 3)
@@ -66,5 +66,5 @@ function simulate_galaxy{G <: AbstractFloat, T <: Integer}(p::SFWParameters{G}, 
     if rate
         return sampledValues, accepted / tested
     end
-    return sampledVaues
+    return sampledValues
 end

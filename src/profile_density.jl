@@ -15,7 +15,7 @@ function profile_density{G <: AbstractFloat}(x::G, vr::G, vt::G, p::NFWParameter
     end
 
     #Compute angular momentum
-    J = abs(x * rs * vt) #vt = v * sin(theta)
+    J = abs(x * p.rs * vt) #vt = v * sin(theta)
     if p.b <= 0.0
         gJ = 1.0 / (1.0 + (J / p.adjJb)^(-p.b))
     else
@@ -39,7 +39,7 @@ function profile_density{G <: AbstractFloat}(x::G, vr::G, vt::G, p::SFWParameter
     end
 
     #Compute angular momentum
-    J = abs(x * rs * vt) #vt = v * sin(theta)
+    J = abs(x * p.rs * vt) #vt = v * sin(theta)
     if p.b <= 0.0
         gJ = 1.0 / (1.0 + (J / p.adjJb)^(-p.b))
     else
