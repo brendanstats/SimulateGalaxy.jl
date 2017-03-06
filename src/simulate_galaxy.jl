@@ -10,7 +10,9 @@ function simulate_galaxy{G <: AbstractFloat, T <: Integer}(p::NFWParameters{G}, 
     fmax = max(0.0,  -1.1 * minProb.minimum)
     
     vmax0 = escape_velocity(x0, p)
-    sampledValues = Array{Float64}(samplesize, 3)
+    sampledr = Array{Float64}(samplesize)
+    sampledvr = Array{Float64}(samplesize)
+    sampledvt = Array{Float64}(samplesize)
     if rate
         tested = 0
     end
@@ -26,13 +28,15 @@ function simulate_galaxy{G <: AbstractFloat, T <: Integer}(p::NFWParameters{G}, 
         end
         if sampleDensity >= (u * fmax)
             accepted += 1
-            sampledValues[accepted, :] = [x * p.rs , vr, vt]
+            sampledr[accepted] = x * p.rs
+            sampledvr[accepted] =  vr
+            sampledvt[accepted] = vt
         end
     end
     if rate
-        return sampledValues, accepted / tested
+        return SphericalGalaxy(sampledr, sampledvr, sampledvt), accepted / tested
     end
-    return sampledValues
+    return SphericalGalaxy(sampledr, sampledvr, sampledvt)
 end
 
 function simulate_galaxy{G <: AbstractFloat, T <: Integer}(p::SFWParameters{G}, samplesize::T; x0::G = 10.0^-8, rate::Bool = false)
@@ -44,7 +48,9 @@ function simulate_galaxy{G <: AbstractFloat, T <: Integer}(p::SFWParameters{G}, 
     fmax = max(0.0,  -1.1 * minProb.minimum)
     
     vmax0 = escape_velocity(x0, p)
-    sampledValues = Array{G}(samplesize, 3)
+    sampledr = Array{Float64}(samplesize)
+    sampledvr = Array{Float64}(samplesize)
+    sampledvt = Array{Float64}(samplesize)
     if rate
         tested = 0
     end
@@ -60,11 +66,13 @@ function simulate_galaxy{G <: AbstractFloat, T <: Integer}(p::SFWParameters{G}, 
         end
         if sampleDensity >= (u * fmax)
             accepted += 1
-            sampledValues[accepted, :] = [x * p.rs , vr, vt]
+            sampledr[accepted] = x * p.rs
+            sampledvr[accepted] =  vr
+            sampledvt[accepted] = vt
         end
     end
     if rate
-        return sampledValues, accepted / tested
+        return SphericalGalaxy(sampledr, sampledvr, sampledvt), accepted / tested
     end
-    return sampledValues
+    return SphericalGalaxy(sampledr, sampledvr, sampledvt)
 end
