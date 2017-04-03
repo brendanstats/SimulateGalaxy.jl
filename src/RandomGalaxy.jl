@@ -159,7 +159,7 @@ function sample_partial_euclidean{G <: AbstractFloat, T <: Integer}(r::Array{G, 
     for (ii, (ri, vri, vti)) in enumerate(zip(r, vr, vt))
         x[ii], y[ii], vz[ii] = sample_partial_euclidean(ri, vri, vti)
     end
-    return x, y, z
+    return x, y, vz
 end
 
 function sample_partial_euclidean{G <: AbstractFloat}(r::Array{G, 1}, vr::Array{G, 1}, vt::Array{G, 1})
