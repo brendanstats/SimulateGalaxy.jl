@@ -8,8 +8,11 @@ export NFWParameters
 export SFWParameters
 export RandomGalaxy,
     SphericalGalaxy,
+    MetallicSphericalGalaxy,
     EuclideanGalaxy,
+    MetallicEuclideanGalaxy,
     PartialEuclideanGalaxy,
+    MetallicPartialEuclideanGalaxy,
     sample_euclidean,
     sample_partial_euclidean
 export hypergeom_2F1_expanded,

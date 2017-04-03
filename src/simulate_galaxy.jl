@@ -34,9 +34,9 @@ function simulate_galaxy{G <: AbstractFloat, T <: Integer}(p::NFWParameters{G}, 
         end
     end
     if rate
-        return SphericalGalaxy(sampledr, sampledvr, sampledvt), accepted / tested
+        return SphericalGalaxy(sampledr, sampledvr, sampledvt, samplesize), accepted / tested
     end
-    return SphericalGalaxy(sampledr, sampledvr, sampledvt)
+    return SphericalGalaxy(sampledr, sampledvr, sampledvt, samplesize)
 end
 
 function simulate_galaxy{G <: AbstractFloat, T <: Integer}(p::SFWParameters{G}, samplesize::T; x0::G = 10.0^-8, rate::Bool = false)
@@ -72,7 +72,28 @@ function simulate_galaxy{G <: AbstractFloat, T <: Integer}(p::SFWParameters{G}, 
         end
     end
     if rate
-        return SphericalGalaxy(sampledr, sampledvr, sampledvt), accepted / tested
+        return SphericalGalaxy(sampledr, sampledvr, sampledvt, samplesize), accepted / tested
     end
-    return SphericalGalaxy(sampledr, sampledvr, sampledvt)
+    return SphericalGalaxy(sampledr, sampledvr, sampledvt, samplesize)
+end
+
+
+function simulate_galaxy{G <: AbstractFloat, T <: Integer}(p::NFWParameters{G}, mμ::G, mσ::G, samplesize::T; x0::G = 10.0^-8, rate::Bool = false)
+    metal = randn(samplesize) .* mσ .+ mμ
+    if rate
+        sg, acptrt = simulate_galaxy(p, samplesize, x0 = x0, rate = rate)
+        return MetallicSphericalGalaxy(sg, metal), acptrt
+    else
+        return MetallicSphericalGalaxy(simulate_galaxy(p, samplesize, x0 = x0, rate = rate), metal)
+    end
+end
+
+function simulate_galaxy{G <: AbstractFloat, T <: Integer}(p::SFWParameters{G}, mμ::G, mσ::G, samplesize::T; x0::G = 10.0^-8, rate::Bool = false)
+    metal = randn(samplesize) .* mσ .+ mμ
+    if rate
+        sg, acptrt = simulate_galaxy(p, samplesize, x0 = x0, rate = rate)
+        return MetallicSphericalGalaxy(sg, metal), acptrt
+    else
+        return MetallicSphericalGalaxy(simulate_galaxy(p, samplesize, x0 = x0, rate = rate), metal)
+    end
 end

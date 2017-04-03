@@ -126,5 +126,53 @@ end
 #Test simulate_galaxy NFW
 @time SimulateGalaxy.simulate_galaxy(nfwpMR, 400, rate = true)
 @time SimulateGalaxy.simulate_galaxy(nfwpMP, 400, rate = true)
+
+#Test simulate_galaxy SFW
 @time SimulateGalaxy.simulate_galaxy(sfwpMR, 400, rate = true)
 @time SimulateGalaxy.simulate_galaxy(sfwpMP, 400, rate = true)
+
+#Test simulate_galaxy NFW with metallicity parameters
+@time SimulateGalaxy.simulate_galaxy(nfwpMR, -2.0,  .003, 400, rate = true)
+@time SimulateGalaxy.simulate_galaxy(nfwpMP, -2.0,  .003, 400, rate = false)
+
+#Test simulate_galaxy SFW with metallicity parameters
+@time SimulateGalaxy.simulate_galaxy(sfwpMR, -2.0,  .003, 400, rate = true)
+@time SimulateGalaxy.simulate_galaxy(sfwpMP, -2.0,  .003, 400, rate = false)
+
+#=
+p = nfwpMR
+samplesize = 10
+function nfwopt(x::Array{Float64, 1})
+    return -(x[1] * x[1] * x[3] * SimulateGalaxy.profile_density(x[1], x[2], x[3], p))
+end
+
+minProb = Optim.optimize(nfwopt, [0.1, 1.0, 1.0], method = Optim.NelderMead())
+fmax = max(0.0,  -1.1 * minProb.minimum)
+
+vmax0 = SimulateGalaxy.escape_velocity(10.0^-8, p)
+sampledr = Array{Float64}(samplesize)
+sampledvr = Array{Float64}(samplesize)
+sampledvt = Array{Float64}(samplesize)
+if rate
+    tested = 0
+end
+rate = false
+accepted = 0
+while accepted < samplesize
+    x = (p.rlim  / p.rs) * rand()
+    vr = vmax0 * rand()
+    vt = vmax0 * rand()
+    u = rand()
+    sampleDensity = x * x * vt * SimulateGalaxy.profile_density(x, vr, vt, p)
+    if rate
+        tested += 1
+    end
+    if sampleDensity >= (u * fmax)
+        accepted += 1
+        sampledr[accepted] = x * p.rs
+        sampledvr[accepted] =  vr
+        sampledvt[accepted] = vt
+    end
+end
+SimulateGalaxy.SphericalGalaxy(sampledr, sampledvr, sampledvt)
+=#
