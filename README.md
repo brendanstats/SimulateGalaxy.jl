@@ -58,15 +58,15 @@ The fields defined in each profile are as follows:
   + vmax
   + rmax
   + rs
-  + $\Phi$s
+  + Φs
   + xlim
-  + $\Phi$lim
+  + Φlim
   + adjEc
   + adjJb
 
 Only the parameters through `rmax` need to be defined, the others over define the density profile but are useful for some computations so are automatically generated.  See the Examples section.
 
-* `SFWParameters{}`
+* `SFWParameters{G <: AbstractFloat}`
   + a
   + d
   + e
@@ -75,19 +75,19 @@ Only the parameters through `rmax` need to be defined, the others over define th
   + b
   + q
   + Jb
-  + $\rho$s
+  + ρs
   + rs
-  + $\alpha$
-  + $\beta$
-  + $\gamma$
-  + $\Phi$s
+  + α
+  + β
+  + γ
+  + Φs
   + xlim
-  + $\Phi$0
-  + $\Phi$lim
+  + Φ0
+  + Φlim
   + adjEc
   + adjJb
 
-Only the parameters through $\gamma$ need to be defined, the others over define the density profile but are useful for some computations so are automatically generated.  See the Examples section.
+Only the parameters through γ need to be defined, the others over define the density profile but are useful for some computations so are automatically generated.  See the Examples section.
 
 ### RandomGalaxy
 The `RandomGalaxy{G <: AbstractFloat, T <: Integer}` is abstract type which encompasses the different types of output that can be generated.  The subtypes which are generated and the fields they contain are as follows:
