@@ -128,7 +128,7 @@ function sample_euclidean{G <: AbstractFloat, T <: Integer}(sg::SphericalGalaxy{
 end
 
 function sample_euclidean{G <: AbstractFloat, T <: Integer}(msg::MetallicSphericalGalaxy{G, T})
-    return MetallicEuclideanGalaxy(sample_euclidean(msg.r, msg.vr, msg.vt, sg.nobs)..., msg.m, msg.nobs)
+    return MetallicEuclideanGalaxy(sample_euclidean(msg.r, msg.vr, msg.vt, msg.nobs)..., msg.m, msg.nobs)
 end
 
 """
@@ -174,5 +174,5 @@ function sample_partial_euclidean{G <: AbstractFloat, T <: Integer}(sg::Spherica
 end
 
 function sample_partial_euclidean{G <: AbstractFloat, T <: Integer}(msg::MetallicSphericalGalaxy{G, T})
-    return MetallicPartialEuclideanGalaxy(sample_partial_euclidean(msg.r, msg.vr, msg.vt, sg.nobs)..., msg.m, msg.nobs)
+    return MetallicPartialEuclideanGalaxy(sample_partial_euclidean(msg.r, msg.vr, msg.vt, msg.nobs)..., msg.m, msg.nobs)
 end
