@@ -6,6 +6,29 @@
 
 [![codecov.io](http://codecov.io/github/brendanstats/SimulateGalaxy.jl/coverage.svg?branch=master)](http://codecov.io/github/brendanstats/SimulateGalaxy.jl?branch=master)
 
+Provides a suite of functions for defining density profiles and methods to generated simulations with draws from the profiles via a rejection sampler.
+
+### Examples
+```{julia}
+using SimulateGalaxy
+
+#Define Density Profiles
+nfw = NFWParameters(2.0, -5.3, 2.5, 0.16, 1.5, -9.0, 6.9, 0.086, 21.0, 1.5)
+sfw = SFWParameters(2.0, -5.3, 2.5, 0.16, 1.5, -9.0, 6.9, 0.086, 4229.2, .69444, 1.2, 3.05, 1.1)
+
+#Simulate Spherical Galaxies with 400 Stars
+nfw_sph = simulate_galaxy(nfw, 400, rate = true)
+sfw_sph = simulate_galaxy(sfw, 400, rate = true)
+
+#Draw a random conversion to Euclidean coordinates based on the spherical coordinates
+nfw_eu = sample_euclidean(nfw_sph)
+sfw_eu = sample_euclidean(sfw_sph)
+
+#Simulate Spherical Galaxies with 400 Stars and a metallicity component
+nfw_sph = simulate_galaxy(nfw, -2.0, .003, 400, rate = true)
+sfw_sph = simulate_galaxy(sfw, -2.0, .003, 400, rate = true)
+```
+
 ### Density Profiles
 
 ###### Navarro–Frenk–White (NFW) profile
@@ -18,6 +41,53 @@ Geringer-Sameth, Alex, Savvas M. Koushiappas, and Matthew Walker. "Dwarf galaxy 
 http://stacks.iop.org/0004-637X/801/i=2/a=74
 
 The appropriate type for such a profile is `SFWParameters`
+
+###### Profile Fields
+
+The fields defined in each profile are as follows:
+
+* `NFWParameters{G <: AbstractFloat}`
+  + a
+  + d
+  + e
+  + Ec
+  + rlim
+  + b
+  + q
+  + Jb
+  + vmax
+  + rmax
+  + rs
+  + $\Phi$s
+  + xlim
+  + $\Phi$lim
+  + adjEc
+  + adjJb
+
+Only the parameters through `rmax` need to be defined, the others over define the density profile but are useful for some computations so are automatically generated.  See the Examples section.
+
+* `SFWParameters{}`
+  + a
+  + d
+  + e
+  + Ec
+  + rlim
+  + b
+  + q
+  + Jb
+  + $\rho$s
+  + rs
+  + $\alpha$
+  + $\beta$
+  + $\gamma$
+  + $\Phi$s
+  + xlim
+  + $\Phi$0
+  + $\Phi$lim
+  + adjEc
+  + adjJb
+
+Only the parameters through $\gamma$ need to be defined, the others over define the density profile but are useful for some computations so are automatically generated.  See the Examples section.
 
 ### RandomGalaxy
 The `RandomGalaxy{G <: AbstractFloat, T <: Integer}` is abstract type which encompasses the different types of output that can be generated.  The subtypes which are generated and the fields they contain are as follows:
@@ -65,24 +135,3 @@ The `RandomGalaxy{G <: AbstractFloat, T <: Integer}` is abstract type which enco
 
 ### Rejection Sampler
 A rejection sampler is used to draw from the density profile returning a radius, radial velocity, and tangential velocity.  If parameters defining the mean and standard deviation of a metallicity are included then a normally distributed metallicity observation is generated as well.  Simulation is done via the `simulate_galaxy` function.
-
-### Examples
-```{julia}
-using SimulateGalaxy
-
-#Define Density Profiles
-nfw = NFWParameters(2.0, -5.3, 2.5, 0.16, 1.5, -9.0, 6.9, 0.086, 21.0, 1.5)
-sfw = SFWParameters(2.0, -5.3, 2.5, 0.16, 1.5, -9.0, 6.9, 0.086, 4229.2, .69444, 1.2, 3.05, 1.1)
-
-#Simulate Spherical Galaxies with 400 Stars
-nfw_sph = simulate_galaxy(nfw, 400, rate = true)
-sfw_sph = simulate_galaxy(sfw, 400, rate = true)
-
-#Draw a random conversion to Euclidean coordinates based on the spherical coordinates
-nfw_eu = sample_euclidean(nfw_sph)
-sfw_eu = sample_euclidean(sfw_sph)
-
-#Simulate Spherical Galaxies with 400 Stars and a metallicity component
-nfw_sph = simulate_galaxy(nfw, -2.0, .003, 400, rate = true)
-sfw_sph = simulate_galaxy(sfw, -2.0, .003, 400, rate = true)
-```
