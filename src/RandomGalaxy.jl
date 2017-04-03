@@ -124,11 +124,11 @@ end
 Generate a EuclideanGalaxy from a SphericalGalaxy
 """
 function sample_euclidean{G <: AbstractFloat, T <: Integer}(sg::SphericalGalaxy{G, T})
-    return EuclideanGalaxy(sample_euclidean(sg.r, sg.vr, sg.vt. sg.nobs)..., sg.nobs)
+    return EuclideanGalaxy(sample_euclidean(sg.r, sg.vr, sg.vt, sg.nobs)..., sg.nobs)
 end
 
 function sample_euclidean{G <: AbstractFloat, T <: Integer}(msg::MetallicSphericalGalaxy{G, T})
-    return MetallicEuclideanGalaxy(sample_euclidean(msg.r, msg.vr, msg.vt. sg.nobs)..., msg.m, msg.nobs)
+    return MetallicEuclideanGalaxy(sample_euclidean(msg.r, msg.vr, msg.vt, sg.nobs)..., msg.m, msg.nobs)
 end
 
 """
@@ -156,7 +156,7 @@ function sample_partial_euclidean{G <: AbstractFloat, T <: Integer}(r::Array{G, 
     x = Array{G}(nobs)
     y = Array{G}(nobs)
     vz = Array{G}(nobs)
-    for (ii, (ri, vri, vti)) in enumerat(zip(r, vr, vt))
+    for (ii, (ri, vri, vti)) in enumerate(zip(r, vr, vt))
         x[ii], y[ii], vz[ii] = sample_partial_euclidean(ri, vri, vti)
     end
     return x, y, z
@@ -174,5 +174,5 @@ function sample_partial_euclidean{G <: AbstractFloat, T <: Integer}(sg::Spherica
 end
 
 function sample_partial_euclidean{G <: AbstractFloat, T <: Integer}(msg::MetallicSphericalGalaxy{G, T})
-    return MetallicPartialEuclideanGalaxy(sample_partial_euclidean(msg.r, msg.vr, msg.vt. sg.nobs)..., msg.m, msg.nobs)
+    return MetallicPartialEuclideanGalaxy(sample_partial_euclidean(msg.r, msg.vr, msg.vt, sg.nobs)..., msg.m, msg.nobs)
 end
