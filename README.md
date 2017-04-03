@@ -17,16 +17,16 @@ nfw = NFWParameters(2.0, -5.3, 2.5, 0.16, 1.5, -9.0, 6.9, 0.086, 21.0, 1.5)
 sfw = SFWParameters(2.0, -5.3, 2.5, 0.16, 1.5, -9.0, 6.9, 0.086, 4229.2, .69444, 1.2, 3.05, 1.1)
 
 #Simulate Spherical Galaxies with 400 Stars
-nfw_sph = simulate_galaxy(nfw, 400, rate = true)
-sfw_sph = simulate_galaxy(sfw, 400, rate = true)
+nfw_sph = simulate_galaxy(nfw, 400)
+sfw_sph = simulate_galaxy(sfw, 400)
 
 #Draw a random conversion to Euclidean coordinates based on the spherical coordinates
 nfw_eu = sample_euclidean(nfw_sph)
 sfw_eu = sample_euclidean(sfw_sph)
 
 #Simulate Spherical Galaxies with 400 Stars and a metallicity component
-nfw_sph = simulate_galaxy(nfw, -2.0, .003, 400, rate = true)
-sfw_sph = simulate_galaxy(sfw, -2.0, .003, 400, rate = true)
+nfw_sph = simulate_galaxy(nfw, -2.0, .003, 400)
+sfw_sph = simulate_galaxy(sfw, -2.0, .003, 400)
 ```
 
 ### Density Profiles
