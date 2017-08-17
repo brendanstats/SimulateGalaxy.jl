@@ -1,4 +1,4 @@
-abstract RandomGalaxy{G <: AbstractFloat, T <: Integer}
+abstract type RandomGalaxy{G <: AbstractFloat, T <: Integer} end
 
 type SphericalGalaxy{G <: AbstractFloat, T <: Integer} <: RandomGalaxy{G, T}
     r::Array{G, 1}
@@ -9,8 +9,7 @@ type SphericalGalaxy{G <: AbstractFloat, T <: Integer} <: RandomGalaxy{G, T}
 end
 
 SphericalGalaxy{G <: AbstractFloat, T <: Integer}(sg1::SphericalGalaxy{G, T}, sg2::SphericalGalaxy{G, T}) = SphericalGalaxy([sg1.r; sg2.r], [sg1.vr; sg2.vr], [sg1.vt; sg2.vt], sg1.nobs + sg2.nobs)
-SphericalGalaxy{G <: AbstractFloat}(r::Array{G, 1}, vr::Array{G, 1}, vt::Array{G, 1}) = SphericalGalaxy(r, vr, vt, length(r)) 
-
+SphericalGalaxy{G <: AbstractFloat}(r::Array{G, 1}, vr::Array{G, 1}, vt::Array{G, 1}) = SphericalGalaxy(r, vr, vt, length(r))
 
 type MetallicSphericalGalaxy{G <: AbstractFloat, T <: Integer} <: RandomGalaxy{G, T}
     r::Array{G, 1}
@@ -24,6 +23,27 @@ end
 MetallicSphericalGalaxy{G <: AbstractFloat, T <: Integer}(msg1::MetallicSphericalGalaxy{G, T}, msg2::MetallicSphericalGalaxy{G, T}) = MetallicSphericalGalaxy([msg1.r; msg2.r], [msg1.vr; msg2.vr], [msg1.vt; msg2.vt], [msg1.m; msg2.m], msg1.nobs + msg2.nobs)
 MetallicSphericalGalaxy{G <: AbstractFloat}(r::Array{G, 1}, vr::Array{G, 1}, vt::Array{G, 1}, m::Array{G, 1}) = MetallicSphericalGalaxy(r, vr, vt, m, length(r))
 MetallicSphericalGalaxy{G <: AbstractFloat, T <: Integer}(sg::SphericalGalaxy{G, T}, m::Array{G,1}) = MetallicSphericalGalaxy(sg.r, sg.vr, sg.vt, m, sg.nobs) 
+
+type PlaneGalaxy{G <: AbstractFloat, T <: Integer} <: RandomGalaxy{G, T}
+    r::Array{G, 1}
+    v::Array{G, 1}
+    nobs::T
+end
+
+PlaneGalaxy{G <: AbstractFloat, T <: Integer}(dg1::PlaneGalaxy{G, T}, dg2::PlaneGalaxy{G, T}) = PlaneGalaxy([dg1.r; dg2.r], [dg1.v; dg2.v], dg1.nobs + dg2.nobs)
+PlaneGalaxy{G <: AbstractFloat}(r::Array{G, 1}, v::Array{G, 1}) = PlaneGalaxy(r, v, length(r))
+
+
+type MetallicPlaneGalaxy{G <: AbstractFloat, T <: Integer} <: RandomGalaxy{G, T}
+    r::Array{G, 1}
+    v::Array{G, 1}
+    m::Array{G, 1}
+    nobs::T
+end
+
+MetallicPlaneGalaxy{G <: AbstractFloat, T <: Integer}(mdg1::PlaneGalaxy{G, T}, mdg2::PlaneGalaxy{G, T}) = MetallicPlaneGalaxy([mdg1.r; mdg2.r], [mdg1.v; mdg2.v], [mdg1.m; mdg2.m], dg1.nobs + dg2.nobs)
+MetallicPlaneGalaxy{G <: AbstractFloat}(r::Array{G, 1}, v::Array{G, 1}, m::Array{G, 1}) = PlaneGalaxy(r, v, m, length(r))
+MetallicPlaneGalaxy{G <: AbstractFloat, T <: Integer}(mdg::PlaneGalaxy{G, T}, m::Array{G,1}) = MetallicPlaneGalaxy(mdg.r, mdg.v, m, mdg.nobs) 
 
 type EuclideanGalaxy{G <: AbstractFloat, T <: Integer} <: RandomGalaxy{G, T}
     x::Array{G, 1}
@@ -77,6 +97,40 @@ MetallicPartialEuclideanGalaxy{G <: AbstractFloat}(x::Array{G, 1}, y::Array{G, 1
 MetallicPartialEuclideanGalaxy{G <: AbstractFloat, T <: Integer}(peg::PartialEuclideanGalaxy{G, T}, m::Array{G, 1}) = MetallicPartialEuclideanGalaxy(peg.x, peg.y, peg.vz, m, peg.nobs)
 MetallicPartialEuclideanGalaxy{G <: AbstractFloat, T <: Integer}(eg::EuclideanGalaxy{G, T}, m::Array{G, 1}) = PartialEuclideanGalaxy(eg.x, eg.y, eg.vz, m, eg.nobs)
 
+"""
+Generate a random PlaneGalaxy star from  a SphericalGalaxy star
+"""
+function sample_plane{G <: AbstractFloat}(r::G, vr::G, vt::G)
+    u = rand()
+    s = 2.0 * sqrt(u - u * u)
+
+    velPhi = 2pi * rand()
+    velSign = sign(rand() - 0.5)
+    
+    return r * s, -s * cos(velPhi) * vt + (1.0 - 2.0 * u) * velSign * vr
+end
+
+function sample_plane{G <: AbstractFloat, T <: Integer}(r::Array{G, 1}, vr::Array{G, 1}, vt::Array{G, 1}, nobs::T)
+    rp = Array{G}(nobs)
+    vp = Array{G}(nobs)
+    for (ii, (ri, vri, vti)) in enumerate(zip(r, vr, vt))
+        rp[ii], vp[ii] = sample_plane(ri, vri, vti)
+    end
+    return rp, vp
+end
+
+function sample_plane{G <: AbstractFloat}(r::Array{G, 1}, vr::Array{G, 1}, vt::Array{G, 1})
+    return sample_plane(r, vr, vt, length(r))
+end
+
+function sample_plane{G <: AbstractFloat, T <: Integer}(sg::SphericalGalaxy{G, T})
+    return PlaneGalaxy(sample_plane(sg.r, sg.vr, sg.vt, sg.nobs)..., sg.nobs)
+end
+
+function sample_plane{G <: AbstractFloat, T <: Integer}(msg::MetallicSphericalGalaxy{G, T})
+    return MetallicPlaneGalaxy(sample_plane(msg.r, msg.vr, msg.vt, msg.nobs)..., msg.m, msg.nobs)
+end
+
 
 """
 Generate a random EuclideanGalaxy star from  a SphericalGalaxy star
@@ -85,7 +139,7 @@ function sample_euclidean{G <: AbstractFloat}(r::G, vr::G, vt::G)
     theta = acos(1.0 - 2.0 * rand())
     phi = 2.0 * pi * rand()
 
-    velocity = sqrt(vr^2 + vt^2)
+    #velocity = sqrt(vr^2 + vt^2)
     velSign = sign(rand() - 0.5)
     velPhi = 2.0 * pi * rand()
 
@@ -136,11 +190,11 @@ Generate a random PartialEuclideanGalaxy star from  a SphericalGalaxy star
 """
 function sample_partial_euclidean{G <: AbstractFloat}(r::G, vr::G, vt::G)
     theta = acos(1.0 - 2.0 * rand())
-    phi = 2.0 * pi * rand()
+    phi = 2pi * rand()
 
     velocity = sqrt(vr^2 + vt^2)
     velSign = sign(rand() - 0.5)
-    velPhi = 2.0 * pi * rand()
+    velPhi = 2pi * rand()
 
     x = r * sin(theta) * cos(phi)
     y = r * sin(theta) * sin(phi)

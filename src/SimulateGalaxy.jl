@@ -9,10 +9,13 @@ export SFWParameters
 export RandomGalaxy,
     SphericalGalaxy,
     MetallicSphericalGalaxy,
+    PlaneGalaxy,
+    MetallicPlaneGalaxy,
     EuclideanGalaxy,
     MetallicEuclideanGalaxy,
     PartialEuclideanGalaxy,
     MetallicPartialEuclideanGalaxy,
+    sample_plane,
     sample_euclidean,
     sample_partial_euclidean
 export hypergeom_2F1_expanded,
