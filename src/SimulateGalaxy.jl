@@ -2,6 +2,7 @@ module SimulateGalaxy
 
 # package code goes here
 import GSL.hypergeom
+import QuadGK.quadgk
 import Optim
 
 export NFWParameters
@@ -22,7 +23,8 @@ export hypergeom_2F1_expanded,
     density_profile,
     gravitational_potential,
     gravitational_potential_integral,
-    gravitational_potential0
+    gravitational_potential0,
+    gravitational_potential0_robust
 export escape_velocity
 export profile_density
 export simulate_galaxy

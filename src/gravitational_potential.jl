@@ -75,6 +75,15 @@ function gravitational_potential0{G <: AbstractFloat, P <: SFWParameters}(x::G, 
     return p.Φs * (1.0 - (I1 + I2))
 end
 
+#complete if re-encouter the error with hypergeom...
+function gravitational_potential0_robust{G <: AbstractFloat, P <: SFWParameters}(x::G, p::P)
+    return try
+        gravitational_potential0(x, p) #determine if should be 0 or not
+    catch
+        gravitational_potential_integral(x, p)
+    end
+end
+
 """
 Gravitational potential for SFW profile where center of galaxy is forced to have a potential of 0.
 """
