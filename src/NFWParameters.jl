@@ -24,7 +24,7 @@ type NFWParameters{G <: AbstractFloat}
     adjJb::G
 end
 
-function NFWParameters{G <: AbstractFloat}(a::G, d::G, e::G, Ec::G, rlim::G, b::G, q::G, Jb::G, vmax::G, rmax::G)
+function NFWParameters(a::G, d::G, e::G, Ec::G, rlim::G, b::G, q::G, Jb::G, vmax::G, rmax::G) where G <: AbstractFloat
 
     rs = rmax / 2.16
     Φs = (vmax / 0.465)^2

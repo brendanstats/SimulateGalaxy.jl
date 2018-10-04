@@ -1,7 +1,7 @@
 """
 Function to simulate a galaxy depending on type of parameters specified given the sample size.
 """
-function simulate_galaxy{G <: AbstractFloat, T <: Integer}(p::NFWParameters{G}, samplesize::T; x0::G = 10.0^-8, αt::G = 1.0, rate::Bool = false)
+function simulate_galaxy(p::NFWParameters{G}, samplesize::T; x0::G = 10.0^-8, αt::G = 1.0, rate::Bool = false) where {G <: AbstractFloat, T <: Integer}
     function nfwopt(x::Array{G, 1})
         return -(x[1] * x[1] * x[3] * profile_density(x[1], x[2], x[3], p, αt = αt))
     end
@@ -45,7 +45,7 @@ function simulate_galaxy{G <: AbstractFloat, T <: Integer}(p::NFWParameters{G}, 
     return SphericalGalaxy(sampledr, sampledvr, sampledvt, samplesize)
 end
 
-function simulate_galaxy{G <: AbstractFloat, T <: Integer}(p::SFWParameters{G}, samplesize::T; x0::G = 10.0^-8, αt::G = 1.0, rate::Bool = false)
+function simulate_galaxy(p::SFWParameters{G}, samplesize::T; x0::G = 10.0^-8, αt::G = 1.0, rate::Bool = false) where {G <: AbstractFloat, T <: Integer}
     function sfwopt(x::Array{G, 1})
         return -(x[1] * x[1] * x[3] * profile_density(x[1], x[2], x[3], p, αt = αt))
     end
@@ -84,7 +84,7 @@ function simulate_galaxy{G <: AbstractFloat, T <: Integer}(p::SFWParameters{G}, 
 end
 
 
-function simulate_galaxy{G <: AbstractFloat, T <: Integer}(p::NFWParameters{G}, mμ::G, mσ::G, samplesize::T; x0::G = 10.0^-8, αt::G = 1.0, rate::Bool = false)
+function simulate_galaxy(p::NFWParameters{G}, mμ::G, mσ::G, samplesize::T; x0::G = 10.0^-8, αt::G = 1.0, rate::Bool = false) where {G <: AbstractFloat, T <: Integer}
     metal = randn(samplesize) .* mσ .+ mμ
     if rate
         sg, acptrt = simulate_galaxy(p, samplesize, x0 = x0, αt = αt, rate = rate)
@@ -94,7 +94,7 @@ function simulate_galaxy{G <: AbstractFloat, T <: Integer}(p::NFWParameters{G}, 
     end
 end
 
-function simulate_galaxy{G <: AbstractFloat, T <: Integer}(p::SFWParameters{G}, mμ::G, mσ::G, samplesize::T; x0::G = 10.0^-8, αt::G = 1.0, rate::Bool = false)
+function simulate_galaxy(p::SFWParameters{G}, mμ::G, mσ::G, samplesize::T; x0::G = 10.0^-8, αt::G = 1.0, rate::Bool = false) where {G <: AbstractFloat, T <: Integer}
     metal = randn(samplesize) .* mσ .+ mμ
     if rate
         sg, acptrt = simulate_galaxy(p, samplesize, x0 = x0, αt = αt, rate = rate)
@@ -108,7 +108,7 @@ end
 """
 Use a grid rejection sampler instead of a standard rejection sampler
 """
-function simulate_galaxy_grid{G <: AbstractFloat, T <: Integer}(p::SFWParameters{G}, samplesize::T; x0::G = 10.0^-8, αt::G = 1.0, rate::Bool = false, ngrid::Integer = 3)
+function simulate_galaxy_grid(p::SFWParameters{G}, samplesize::T; x0::G = 10.0^-8, αt::G = 1.0, rate::Bool = false, ngrid::Integer = 3) where {G <: AbstractFloat, T <: Integer}
     
     vmax0 = escape_velocity(x0, p)
     

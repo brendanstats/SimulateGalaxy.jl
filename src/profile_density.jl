@@ -1,7 +1,7 @@
 """
 Compute the dark matter density profile at the point (x, vr, vt).  Where x is the radius divided by the scale radius (r / rs), vr is the radial velocity, and vt is the tangential velocity.
 """
-function profile_density{G <: AbstractFloat}(x::G, vr::G, vt::G, p::NFWParameters{G}; N::G = 1000.0, αt::G = 1.0)
+function profile_density(x::G, vr::G, vt::G, p::NFWParameters{G}; N::G = 1000.0, αt::G = 1.0) where G <: AbstractFloat
     if x < 0.0
         return 0.0
     end
@@ -27,7 +27,7 @@ function profile_density{G <: AbstractFloat}(x::G, vr::G, vt::G, p::NFWParameter
     return hE * gJ
 end
 
-function log_profile_density{G <: AbstractFloat}(x::G, vr::G, vt::G, p::NFWParameters{G}; N::G = 1000.0, αt::G = 1.0)
+function log_profile_density(x::G, vr::G, vt::G, p::NFWParameters{G}; N::G = 1000.0, αt::G = 1.0) where G <: AbstractFloat
     if x < 0.0
         return -Inf
     end
@@ -54,7 +54,7 @@ function log_profile_density{G <: AbstractFloat}(x::G, vr::G, vt::G, p::NFWParam
     return lhE + lgJ
 end
 
-function profile_density{G <: AbstractFloat}(x::G, vr::G, vt::G, p::SFWParameters{G}; N::G = 1000.0, αt::G = 1.0)
+function profile_density(x::G, vr::G, vt::G, p::SFWParameters{G}; N::G = 1000.0, αt::G = 1.0) where G <: AbstractFloat
     if x < 0.0
         return 0.0
     end
@@ -80,7 +80,7 @@ function profile_density{G <: AbstractFloat}(x::G, vr::G, vt::G, p::SFWParameter
     return hE * gJ
 end
 
-function log_profile_density{G <: AbstractFloat}(x::G, vr::G, vt::G, p::SFWParameters{G}; N::G = 1000.0, αt::G = 1.0)
+function log_profile_density(x::G, vr::G, vt::G, p::SFWParameters{G}; N::G = 1000.0, αt::G = 1.0) where G <: AbstractFloat
     if x < 0.0
         return -Inf
     end

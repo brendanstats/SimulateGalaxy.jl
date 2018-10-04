@@ -1,7 +1,7 @@
 """
 Transform the results of GenGalaxy to Euclidean coordinates.
 """
-function converttoeuclidean{G <: AbstractFloat}(coordinate::Array{G,1})
+function converttoeuclidean(coordinate::Array{G,1}) where G <: AbstractFloat
     radius = coordinate[1]
     theta = acos(1.0 - 2.0 * rand())
     phi = 2.0 * pi * rand()

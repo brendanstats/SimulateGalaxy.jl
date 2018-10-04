@@ -23,7 +23,7 @@ type SFWParameters{G <: AbstractFloat}
     adjJb::G
 end
 
-function SFWParameters{G <: AbstractFloat}(a::G, d::G, e::G, Ec::G, rlim::G, b::G, q::G, Jb::G, ρs::G, rs::G, α::G, β::G, γ::G; x0::G = 10.0^-8)
+function SFWParameters(a::G, d::G, e::G, Ec::G, rlim::G, b::G, q::G, Jb::G, ρs::G, rs::G, α::G, β::G, γ::G; x0::G = 10.0^-8) where G <: AbstractFloat
 
     Φs = ρs * rs ^ 2
     xlim = rlim / rs
