@@ -27,6 +27,33 @@ function profile_density{G <: AbstractFloat}(x::G, vr::G, vt::G, p::NFWParameter
     return hE * gJ
 end
 
+function log_profile_density{G <: AbstractFloat}(x::G, vr::G, vt::G, p::NFWParameters{G}; N::G = 1000.0, αt::G = 1.0)
+    if x < 0.0
+        return -Inf
+    end
+
+    #Compute Energy
+    E = 0.5 * (vt * vt + vr * vr) + gravitational_potential(x, p)
+    lE = log(E)
+    if E < p.Φlim && E >= 0.0
+        lhE = log(N) + p.a * lE + (p.d/p.q) * log(E^p.q + p.adjEc^p.q) + p.e * log(p.Φlim - E)
+    else
+        return -Inf
+    end
+
+    #Compute angular momentum
+    J = abs(x * p.rs * vt) #vt = v * sin(theta)
+    if p.b <= 0.0
+        #gJ = 1.0 / (1.0 + (J / p.adjJb)^(-p.b))
+        lgJ = -αt * log(1.0 + (J / p.adjJb)^(-p.b / αt))
+    else
+        #gJ = 1.0 + (J / p.adjJb)^p.b
+        lgJ = αt * log(1.0 + (J / p.adjJb)^(p.b / αt))
+    end
+
+    return lhE + lgJ
+end
+
 function profile_density{G <: AbstractFloat}(x::G, vr::G, vt::G, p::SFWParameters{G}; N::G = 1000.0, αt::G = 1.0)
     if x < 0.0
         return 0.0
@@ -51,4 +78,29 @@ function profile_density{G <: AbstractFloat}(x::G, vr::G, vt::G, p::SFWParameter
     end
 
     return hE * gJ
+end
+
+function log_profile_density{G <: AbstractFloat}(x::G, vr::G, vt::G, p::SFWParameters{G}; N::G = 1000.0, αt::G = 1.0)
+    if x < 0.0
+        return -Inf
+    end
+
+    #Compute Energy
+    E = 0.5 * (vt * vt + vr * vr) + gravitational_potential(x, p)
+    lE = log(E)
+    if E < p.Φlim && E >= 0.0
+        lhE = log(N) + p.a * lE + (p.d/p.q) * log(E^p.q + p.adjEc^p.q) + p.e * log(p.Φlim - E)
+    else
+        return -Inf
+    end
+
+    #Compute angular momentum
+    J = abs(x * p.rs * vt) #vt = v * sin(theta)
+    if p.b <= 0.0
+        lgJ = -αt * log(1.0 + (J / p.adjJb)^(-p.b / αt))
+    else
+        lgJ = αt * log(1.0 + (J / p.adjJb)^(-p.b / αt))
+    end
+
+    return lhE + lgJ
 end

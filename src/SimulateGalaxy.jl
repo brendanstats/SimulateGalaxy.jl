@@ -3,7 +3,7 @@ module SimulateGalaxy
 # package code goes here
 import GSL.hypergeom
 import QuadGK.quadgk
-import Optim
+import Optim, StatsBase
 
 export NFWParameters
 export SFWParameters
